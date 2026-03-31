@@ -236,6 +236,7 @@ body.light .seg-btn{
 </div>
 
 <button class="share" id="shareBtn" style="display:none" onclick="shareWA()">Share ke WhatsApp</button>
+<button onclick="shareLink()">Share Link</button>
 
 <div class="history" id="history"></div>
 
@@ -295,6 +296,22 @@ el.value = formatRupiah(perPerson);
 // autoFillAmounts();
 // }
 // });
+
+function shareLink(){
+const data = window.lastShare;
+
+const params = new URLSearchParams({
+total: Math.round(data.grandTotal),
+people: data.people,
+per: Math.round(data.perPerson)
+});
+
+const link = window.location.origin + window.location.pathname + "?" + params.toString();
+
+navigator.clipboard.writeText(link);
+
+alert("Link berhasil disalin!");
+}
 
 let autoMode = false;
 
@@ -440,6 +457,25 @@ function clearHistory(){
 localStorage.removeItem("split_history");
 renderHistory();
 }
+
+(function loadFromURL(){
+const params = new URLSearchParams(window.location.search);
+
+if(!params.has("total")) return;
+
+document.getElementById("total").value =
+formatRupiah(params.get("total"));
+
+document.getElementById("people").value =
+params.get("people");
+
+generatePeople();
+
+setTimeout(()=>{
+calculate();
+},200);
+
+})();
 
 renderHistory();
 formatInputRupiah(document.getElementById("total"));
