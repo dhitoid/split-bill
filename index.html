@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Split Bill Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+}
+
+.container{
+  width:100%;
+  max-width:420px;
+  padding:20px;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.3);
+}
+
+h1{
+  font-size:22px;
+  margin-bottom:20px;
+  font-weight:600;
+}
+
+.label{
+  font-size:13px;
+  opacity:.7;
+  margin-bottom:6px;
+}
+
+.input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  margin-bottom:16px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-size:15px;
+}
+
+.input::placeholder{
+  color:rgba(255,255,255,0.4);
+}
+
+.row{
+  display:flex;
+  gap:12px;
+}
+
+.result{
+  margin-top:20px;
+  padding:18px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  text-align:center;
+}
+
+.result small{
+  opacity:.8;
+}
+
+.result h2{
+  margin-top:6px;
+  font-size:26px;
+}
+
+.footer{
+  margin-top:14px;
+  text-align:center;
+  font-size:12px;
+  opacity:.6;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:white;
+  color:#111;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:6px;
+  transition:.2s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h1>💸 Split Bill Premium</h1>
+
+    <div class="label">Total Tagihan</div>
+    <input class="input" id="total" placeholder="Contoh: 250000" />
+
+    <div class="row">
+      <div style="flex:1">
+        <div class="label">Jumlah Orang</div>
+        <input class="input" id="people" placeholder="3" />
+      </div>
+
+      <div style="flex:1">
+        <div class="label">Service (%)</div>
+        <input class="input" id="service" placeholder="5" />
+      </div>
+    </div>
+
+    <div class="label">Pajak (%)</div>
+    <input class="input" id="tax" placeholder="10" />
+
+    <button onclick="calculate()">Hitung Sekarang</button>
+
+    <div class="result" id="result" style="display:none">
+      <small>Per Orang Bayar</small>
+      <h2 id="perPerson">Rp 0</h2>
+    </div>
+
+    <div class="footer">Simple • Modern • Premium</div>
+  </div>
+</div>
+
+<script>
+function formatRupiah(num){
+  return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function calculate(){
+  const total = parseFloat(document.getElementById('total').value) || 0;
+  const people = parseFloat(document.getElementById('people').value) || 1;
+  const service = parseFloat(document.getElementById('service').value) || 0;
+  const tax = parseFloat(document.getElementById('tax').value) || 0;
+
+  const serviceAmount = total * (service/100);
+  const taxAmount = total * (tax/100);
+
+  const grandTotal = total + serviceAmount + taxAmount;
+  const perPerson = Math.ceil(grandTotal / people);
+
+  document.getElementById('perPerson').innerText = formatRupiah(perPerson);
+  document.getElementById('result').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
