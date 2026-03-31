@@ -86,72 +86,6 @@ body.light .history-item{
   margin-top:10px;
 }
 
-.split-toggle{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  margin-bottom:14px;
-  font-size:13px;
-  opacity:.8;
-}
-
-.switch{
-  position:relative;
-  width:44px;
-  height:24px;
-}
-
-.switch input{
-  opacity:0;
-  width:0;
-  height:0;
-}
-
-.slider{
-  position:absolute;
-  cursor:pointer;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background:rgba(255,255,255,0.2);
-  border-radius:50px;
-  transition:.3s;
-}
-
-.slider:before{
-  position:absolute;
-  content:"";
-  height:18px;
-  width:18px;
-  left:3px;
-  top:3px;
-  background:white;
-  border-radius:50%;
-  transition:.3s;
-}
-
-.switch input:checked + .slider{
-  background:linear-gradient(135deg,#6366f1,#8b5cf6);
-}
-
-.switch input:checked + .slider:before{
-  transform:translateX(20px);
-}
-
-.split-toggle span{
-  transition:.2s;
-}
-
-#autoSplit:checked ~ span:last-child{
-  font-weight:600;
-}
-
-#autoSplit:not(:checked) ~ span:first-child{
-  font-weight:600;
-}
-
 .segmented{
   display:flex;
   background:rgba(255,255,255,0.08);
@@ -184,6 +118,106 @@ body.light .segmented{
 body.light .seg-btn{
   color:#111;
 }
+
+.footer{
+  margin-top:20px;
+  display:flex;
+  justify-content:space-between;
+  background:rgba(255,255,255,0.05);
+  padding:12px;
+  border-radius:16px;
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+  animation:fadeUp .6s ease;
+}
+
+.footer-item{
+  flex:1;
+  text-align:center;
+  cursor:pointer;
+  font-size:18px;
+  padding:8px 4px;
+  border-radius:12px;
+  transition:.2s;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  opacity:.8;
+}
+
+.footer-item span{
+  font-size:10px;
+}
+
+.footer-item:hover{
+  background:rgba(255,255,255,0.08);
+  transform:translateY(-2px);
+  opacity:1;
+}
+
+.footer-item.highlight{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:white;
+  opacity:1;
+  box-shadow:0 6px 18px rgba(0,0,0,0.3);
+}
+
+body.light .footer{
+  background:#f1f5f9;
+}
+
+.theme-toggle{
+  position:absolute;
+  top:20px;
+  right:20px;
+  cursor:pointer;
+}
+
+.toggle-track{
+  width:54px;
+  height:28px;
+  background:rgba(255,255,255,0.15);
+  border-radius:20px;
+  position:relative;
+  transition:.3s;
+  backdrop-filter:blur(10px);
+}
+
+.toggle-thumb{
+  width:22px;
+  height:22px;
+  background:white;
+  border-radius:50%;
+  position:absolute;
+  top:3px;
+  left:3px;
+  transition:.3s;
+  box-shadow:0 4px 10px rgba(0,0,0,.3);
+}
+
+.icon{
+  position:absolute;
+  font-size:12px;
+  top:6px;
+  opacity:.6;
+}
+
+.icon.sun{
+  left:6px;
+}
+
+.icon.moon{
+  right:6px;
+}
+
+/* ACTIVE LIGHT MODE */
+body.light .toggle-track{
+  background:linear-gradient(135deg,#eab308,#f59e0b);
+}
+
+body.light .toggle-thumb{
+  left:29px;
+}
 </style>
 </head>
 <body>
@@ -191,7 +225,13 @@ body.light .seg-btn{
 <div class="card">
 <h1>💸 Split Bill Premium</h1>
 
-<div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+<div class="theme-toggle" onclick="toggleTheme()">
+  <div class="toggle-track">
+    <div class="toggle-thumb"></div>
+    <span class="icon sun">☀️</span>
+    <span class="icon moon">🌙</span>
+  </div>
+</div>
 
 <div class="label">Total Tagihan</div>
 <input class="input" id="total" placeholder="250000" />
@@ -209,15 +249,6 @@ body.light .seg-btn{
 
 <div class="label">Pajak %</div>
 <input class="input" id="tax" placeholder="10" />
-
-<!-- <div class="split-toggle">
-  <span>Manual</span>
-  <label class="switch">
-    <input type="checkbox" id="autoSplit">
-    <span class="slider"></span>
-  </label>
-  <span>Auto</span>
-</div> -->
 
 <div class="segmented">
   <button class="seg-btn active" id="modeManual">Manual</button>
@@ -246,6 +277,28 @@ body.light .seg-btn{
 </div>
 </div>
 
+<div class="footer">
+  <!-- <div class="footer-item" onclick="shareWA()">
+    💬
+    <span>WA</span>
+  </div> -->
+
+  <div class="footer-item" onclick="shareLink()">
+    🔗
+    <span>Link</span>
+  </div>
+
+  <div class="footer-item highlight" onclick="openDonate()">
+    🤝
+    <span>Berbagi</span>
+  </div>
+
+  <div class="footer-item" onclick="scrollToTop()">
+    ⬆️
+    <span>Top</span>
+  </div>
+</div>
+
 <script>
 function formatRupiah(num){
 return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
@@ -255,6 +308,17 @@ function getNumberValue(id){
 return parseFloat(
 cleanNumber(document.getElementById(id).value)
 ) || 0;
+}
+
+function openDonate(){
+window.open("https://bagibagi.co/Dhito", "_blank");
+}
+
+function scrollToTop(){
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 }
 
 function animateValue(el,start,end,duration){
@@ -284,18 +348,6 @@ el.value = formatRupiah(perPerson);
 }
 }
 }
-
-// document.getElementById("autoSplit").addEventListener("change",()=>{
-// if(document.getElementById("autoSplit").checked){
-// autoFillAmounts();
-// }
-// });
-
-// document.getElementById("autoSplit").addEventListener("change",()=>{
-// if(document.getElementById("autoSplit").checked){
-// autoFillAmounts();
-// }
-// });
 
 function shareLink(){
 const data = window.lastShare;
@@ -443,7 +495,9 @@ container.appendChild(div);
 
 function toggleTheme(){
 document.body.classList.toggle("light");
-localStorage.setItem("theme",document.body.classList.contains("light")?"light":"dark");
+
+const mode = document.body.classList.contains("light") ? "light" : "dark";
+localStorage.setItem("theme", mode);
 }
 
 (function(){
