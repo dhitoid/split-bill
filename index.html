@@ -85,6 +85,72 @@ body.light .history-item{
   color:white;
   margin-top:10px;
 }
+
+.split-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:14px;
+  font-size:13px;
+  opacity:.8;
+}
+
+.switch{
+  position:relative;
+  width:44px;
+  height:24px;
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  cursor:pointer;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(255,255,255,0.2);
+  border-radius:50px;
+  transition:.3s;
+}
+
+.slider:before{
+  position:absolute;
+  content:"";
+  height:18px;
+  width:18px;
+  left:3px;
+  top:3px;
+  background:white;
+  border-radius:50%;
+  transition:.3s;
+}
+
+.switch input:checked + .slider{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(20px);
+}
+
+.split-toggle span{
+  transition:.2s;
+}
+
+#autoSplit:checked ~ span:last-child{
+  font-weight:600;
+}
+
+#autoSplit:not(:checked) ~ span:first-child{
+  font-weight:600;
+}
 </style>
 </head>
 <body>
@@ -111,11 +177,13 @@ body.light .history-item{
 <div class="label">Pajak %</div>
 <input class="input" id="tax" placeholder="10" />
 
-<div class="row" style="margin-bottom:10px;">
-  <label style="font-size:13px;">
-    <input type="checkbox" id="autoSplit" />
-    Split Otomatis dari Total
+<div class="split-toggle">
+  <span>Manual</span>
+  <label class="switch">
+    <input type="checkbox" id="autoSplit">
+    <span class="slider"></span>
   </label>
+  <span>Auto</span>
 </div>
 
 <button onclick="generatePeople()">Buat Input Orang</button>
