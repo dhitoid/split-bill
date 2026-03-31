@@ -2,17 +2,27 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Split Bill Premium</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{min-height:100vh;background:linear-gradient(135deg,#0f172a,#1e293b);display:flex;align-items:center;justify-content:center;color:white;}
+body{padding-bottom:env(safe-area-inset-bottom);min-height:100vh;background:linear-gradient(135deg,#0f172a,#1e293b);display:flex;align-items:center;justify-content:center;color:white;}
 .container{width:100%;max-width:440px;padding:20px;}
 .card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,0.3);}
 h1{font-size:22px;margin-bottom:20px;font-weight:600;}
 .label{font-size:13px;opacity:.7;margin-bottom:6px;}
-.input{width:100%;padding:14px;border-radius:12px;border:none;outline:none;margin-bottom:16px;background:rgba(255,255,255,0.08);color:white;font-size:15px;}
+.input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  margin-bottom:16px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-size:16px; /* <- ini penting */
+}
 .row{display:flex;gap:12px;}
 .result{margin-top:20px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);text-align:center;}
 .result h2{margin-top:6px;font-size:28px;}
@@ -24,6 +34,11 @@ button:hover{transform:translateY(-2px);}
 .share{background:#25D366;color:white;margin-top:10px;}
 .card{
   animation:fadeUp .6s ease;
+}
+
+
+html{
+  scroll-behavior:smooth;
 }
 
 @keyframes fadeUp{
@@ -218,6 +233,78 @@ body.light .toggle-track{
 body.light .toggle-thumb{
   left:29px;
 }
+
+/* MOBILE */
+@media (max-width:480px){
+
+.container{
+  padding:12px;
+}
+
+.card{
+  padding:18px;
+  border-radius:16px;
+}
+
+.row{
+  flex-direction:column;
+}
+
+.person{
+  flex-direction:column;
+}
+
+button{
+  padding:16px;
+  font-size:15px;
+}
+
+.result h2{
+  font-size:26px;
+}
+
+.footer{
+  position:sticky;
+  bottom:0;
+  backdrop-filter:blur(30px);
+}
+
+/* lebih nyaman sentuh */
+.seg-btn{
+  padding:12px;
+}
+
+}
+
+/* LAPTOP */
+@media (min-width:768px){
+
+body{
+  padding:40px;
+}
+
+.container{
+  max-width:520px;
+}
+
+.card{
+  padding:28px;
+}
+
+.result h2{
+  font-size:32px;
+}
+
+@media (hover:none){
+button:hover{
+transform:none;
+}
+.footer-item:hover{
+transform:none;
+}
+}
+
+}
 </style>
 </head>
 <body>
@@ -234,21 +321,21 @@ body.light .toggle-thumb{
 </div>
 
 <div class="label">Total Tagihan</div>
-<input class="input" id="total" placeholder="250000" />
+<input class="input" id="total" inputmode="numeric" placeholder="250000" />
 
 <div class="row">
 <div style="flex:1">
 <div class="label">Jumlah Orang</div>
-<input class="input" id="people" placeholder="3" />
+<input class="input" id="people" inputmode="numeric" placeholder="3" />
 </div>
 <div style="flex:1">
 <div class="label">Service %</div>
-<input class="input" id="service" placeholder="5" />
+<input class="input" id="service" inputmode="numeric" placeholder="5" />
 </div>
 </div>
 
 <div class="label">Pajak %</div>
-<input class="input" id="tax" placeholder="10" />
+<input class="input" id="tax" inputmode="numeric" placeholder="10" />
 
 <div class="segmented">
   <button class="seg-btn active" id="modeManual">Manual</button>
@@ -408,7 +495,7 @@ const div=document.createElement('div');
 div.className='person';
 div.innerHTML=`
 <input class="input" placeholder="Nama" id="name${i}" />
-<input class="input" placeholder="Jumlah Makan" id="amount${i}" />
+<input class="input" placeholder="Jumlah Makan" id="amount${i}" inputmode="numeric" />
 `;
 container.appendChild(div);
 formatInputRupiah(document.getElementById("total"));
