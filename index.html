@@ -111,6 +111,13 @@ body.light .history-item{
 <div class="label">Pajak %</div>
 <input class="input" id="tax" placeholder="10" />
 
+<div class="row" style="margin-bottom:10px;">
+  <label style="font-size:13px;">
+    <input type="checkbox" id="autoSplit" />
+    Split Otomatis dari Total
+  </label>
+</div>
+
 <button onclick="generatePeople()">Buat Input Orang</button>
 
 <div class="people-list" id="peopleList"></div>
@@ -155,6 +162,34 @@ if(progress<1) requestAnimationFrame(animation);
 requestAnimationFrame(animation);
 }
 
+function autoFillAmounts(){
+const people = parseInt(getNumberValue('people')) || 1;
+const total = getNumberValue('total');
+
+if(!people || !total) return;
+
+const perPerson = Math.ceil(total / people);
+
+for(let i=0;i<people;i++){
+const el = document.getElementById(`amount${i}`);
+if(el){
+el.value = formatRupiah(perPerson);
+}
+}
+}
+
+document.getElementById("autoSplit").addEventListener("change",()=>{
+if(document.getElementById("autoSplit").checked){
+autoFillAmounts();
+}
+});
+
+document.getElementById("autoSplit").addEventListener("change",()=>{
+if(document.getElementById("autoSplit").checked){
+autoFillAmounts();
+}
+});
+
 function generatePeople(){
 const people=parseInt(document.getElementById('people').value)||0;
 const container=document.getElementById('peopleList');
@@ -170,6 +205,10 @@ div.innerHTML=`
 container.appendChild(div);
 formatInputRupiah(document.getElementById("total"));
 formatInputRupiah(div.querySelector(`#amount${i}`));
+}
+
+if(document.getElementById("autoSplit").checked){
+autoFillAmounts();
 }
 }
 
