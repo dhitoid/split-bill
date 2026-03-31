@@ -51,12 +51,48 @@ button:hover{transform:translateY(-2px);}
   font-size:13px;
   animation:fadeUp .4s ease;
 }
+
+.theme-toggle{
+  position:absolute;
+  top:20px;
+  right:20px;
+  cursor:pointer;
+  font-size:18px;
+  opacity:.8;
+}
+
+body.light{
+  background:linear-gradient(135deg,#f1f5f9,#e2e8f0);
+  color:#111;
+}
+
+body.light .card{
+  background:white;
+  color:#111;
+}
+
+body.light .input{
+  background:#f1f5f9;
+  color:#111;
+}
+
+body.light .history-item{
+  background:#f1f5f9;
+}
+
+.clear-history{
+  background:#ef4444;
+  color:white;
+  margin-top:10px;
+}
 </style>
 </head>
 <body>
 <div class="container">
 <div class="card">
 <h1>💸 Split Bill Premium</h1>
+
+<div class="theme-toggle" onclick="toggleTheme()">🌙</div>
 
 <div class="label">Total Tagihan</div>
 <input class="input" id="total" placeholder="250000" />
@@ -90,6 +126,8 @@ button:hover{transform:translateY(-2px);}
 
 <div class="history" id="history"></div>
 
+<button class="clear-history" onclick="clearHistory()">Hapus Riwayat</button>
+
 <div class="small">Premium Split Bill Tool</div>
 </div>
 </div>
@@ -97,6 +135,12 @@ button:hover{transform:translateY(-2px);}
 <script>
 function formatRupiah(num){
 return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+
+function getNumberValue(id){
+return parseFloat(
+cleanNumber(document.getElementById(id).value)
+) || 0;
 }
 
 function animateValue(el,start,end,duration){
@@ -130,10 +174,10 @@ formatInputRupiah(div.querySelector(`#amount${i}`));
 }
 
 function calculate(){
-const total=parseFloat(document.getElementById('total').value)||0;
-const service=parseFloat(document.getElementById('service').value)||0;
-const tax=parseFloat(document.getElementById('tax').value)||0;
-const people=parseInt(document.getElementById('people').value)||1;
+const total = getNumberValue('total');
+const service = getNumberValue('service');
+const tax = getNumberValue('tax');
+const people = parseInt(getNumberValue('people')) || 1;
 
 let customTotal=0;
 for(let i=0;i<people;i++){
@@ -202,7 +246,28 @@ container.appendChild(div);
 });
 }
 
+function toggleTheme(){
+document.body.classList.toggle("light");
+localStorage.setItem("theme",document.body.classList.contains("light")?"light":"dark");
+}
+
+(function(){
+const saved=localStorage.getItem("theme");
+if(saved==="light"){
+document.body.classList.add("light");
+}
+})();
+
+function clearHistory(){
+localStorage.removeItem("split_history");
 renderHistory();
+}
+
+renderHistory();
+formatInputRupiah(document.getElementById("total"));
+formatInputRupiah(document.getElementById("service"));
+formatInputRupiah(document.getElementById("tax"));
+formatInputRupiah(document.getElementById("people"));
 </script>
 </body>
 </html>
