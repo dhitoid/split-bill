@@ -151,6 +151,39 @@ body.light .history-item{
 #autoSplit:not(:checked) ~ span:first-child{
   font-weight:600;
 }
+
+.segmented{
+  display:flex;
+  background:rgba(255,255,255,0.08);
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:14px;
+}
+
+.seg-btn{
+  flex:1;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  background:transparent;
+  color:white;
+  cursor:pointer;
+  font-size:13px;
+  transition:.25s;
+}
+
+.seg-btn.active{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+body.light .segmented{
+  background:#e2e8f0;
+}
+
+body.light .seg-btn{
+  color:#111;
+}
 </style>
 </head>
 <body>
@@ -177,13 +210,18 @@ body.light .history-item{
 <div class="label">Pajak %</div>
 <input class="input" id="tax" placeholder="10" />
 
-<div class="split-toggle">
+<!-- <div class="split-toggle">
   <span>Manual</span>
   <label class="switch">
     <input type="checkbox" id="autoSplit">
     <span class="slider"></span>
   </label>
   <span>Auto</span>
+</div> -->
+
+<div class="segmented">
+  <button class="seg-btn active" id="modeManual">Manual</button>
+  <button class="seg-btn" id="modeAuto">Auto Split</button>
 </div>
 
 <button onclick="generatePeople()">Buat Input Orang</button>
@@ -246,17 +284,50 @@ el.value = formatRupiah(perPerson);
 }
 }
 
-document.getElementById("autoSplit").addEventListener("change",()=>{
-if(document.getElementById("autoSplit").checked){
-autoFillAmounts();
-}
-});
+// document.getElementById("autoSplit").addEventListener("change",()=>{
+// if(document.getElementById("autoSplit").checked){
+// autoFillAmounts();
+// }
+// });
 
-document.getElementById("autoSplit").addEventListener("change",()=>{
-if(document.getElementById("autoSplit").checked){
-autoFillAmounts();
+// document.getElementById("autoSplit").addEventListener("change",()=>{
+// if(document.getElementById("autoSplit").checked){
+// autoFillAmounts();
+// }
+// });
+
+let autoMode = false;
+
+document.getElementById("modeManual").onclick = ()=>{
+autoMode = false;
+document.getElementById("modeManual").classList.add("active");
+document.getElementById("modeAuto").classList.remove("active");
+unlockAmounts();
 }
-});
+
+document.getElementById("modeAuto").onclick = ()=>{
+autoMode = true;
+document.getElementById("modeAuto").classList.add("active");
+document.getElementById("modeManual").classList.remove("active");
+autoFillAmounts();
+lockAmounts();
+}
+
+function lockAmounts(){
+const people = parseInt(getNumberValue('people')) || 0;
+for(let i=0;i<people;i++){
+const el=document.getElementById(`amount${i}`);
+if(el) el.readOnly=true;
+}
+}
+
+function unlockAmounts(){
+const people = parseInt(getNumberValue('people')) || 0;
+for(let i=0;i<people;i++){
+const el=document.getElementById(`amount${i}`);
+if(el) el.readOnly=false;
+}
+}
 
 function generatePeople(){
 const people=parseInt(document.getElementById('people').value)||0;
@@ -275,7 +346,7 @@ formatInputRupiah(document.getElementById("total"));
 formatInputRupiah(div.querySelector(`#amount${i}`));
 }
 
-if(document.getElementById("autoSplit").checked){
+if(autoMode){
 autoFillAmounts();
 }
 }
