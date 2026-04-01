@@ -328,6 +328,82 @@ transform:none;
 }
 
 }
+
+.person-card{
+display:flex;
+align-items:center;
+gap:10px;
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.08);
+padding:12px;
+border-radius:14px;
+transition:.25s;
+animation:fadeUp .4s ease;
+}
+
+.person-card:hover{
+background:rgba(255,255,255,0.09);
+transform:translateY(-2px);
+}
+
+.avatar{
+width:36px;
+height:36px;
+border-radius:50%;
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px;
+font-weight:600;
+}
+
+.person-fields{
+flex:1;
+display:flex;
+gap:8px;
+}
+
+.person-fields .input{
+margin-bottom:0;
+}
+
+.delete-person{
+background:rgba(239,68,68,.15);
+border:none;
+color:#ef4444;
+padding:8px 10px;
+border-radius:10px;
+cursor:pointer;
+font-size:12px;
+}
+
+.delete-person:hover{
+background:rgba(239,68,68,.25);
+}
+
+.avatar{
+transition:.25s;
+}
+
+.person-card:hover .avatar{
+transform:scale(1.05);
+}
+
+.badge-max{
+background:linear-gradient(135deg,#f59e0b,#f97316);
+color:white;
+font-size:10px;
+padding:4px 6px;
+border-radius:6px;
+margin-left:6px;
+white-space:nowrap;
+}
+
+.person-card.max{
+border:1px solid rgba(245,158,11,.6);
+box-shadow:0 0 0 1px rgba(245,158,11,.3);
+}
 </style>
 </head>
 <body>
@@ -368,6 +444,10 @@ transform:none;
 <button onclick="generatePeople()">Buat Input Orang</button>
 
 <div class="people-list" id="peopleList"></div>
+
+<button onclick="addPerson()" style="margin-top:10px;background:rgba(255,255,255,.08);color:white;">
++ Tambah Orang
+</button>
 
 <button onclick="calculate()">Hitung Split Bill</button>
 
@@ -514,20 +594,135 @@ const container=document.getElementById('peopleList');
 container.innerHTML='';
 
 for(let i=0;i<people;i++){
+
 const div=document.createElement('div');
-div.className='person';
+div.className='person-card';
+
 div.innerHTML=`
-<input class="input" placeholder="Nama" id="name${i}" />
-<input class="input" placeholder="Jumlah Makan" id="amount${i}" inputmode="numeric" />
+<div class="avatar" id="avatar${i}" style="background:${getRandomGradient()}">${i+1}</div>
+
+<div class="person-fields">
+<input class="input" placeholder="Nama" id="name${i}" 
+oninput="updateAvatar(${i})" />
+
+<input class="input" placeholder="Jumlah" 
+id="amount${i}" inputmode="numeric" />
+</div>
+
+<button class="delete-person" onclick="removePerson(this)">✕</button>
 `;
+
 container.appendChild(div);
+
 formatInputRupiah(document.getElementById("total"));
-formatInputRupiah(div.querySelector(`#amount${i}`));
+formatInputRupiah(document.getElementById(`amount${i}`));
+
 }
 
 if(autoMode){
 autoFillAmounts();
 }
+}
+
+function updateAvatar(i){
+const name = document.getElementById(`name${i}`).value;
+const avatar = document.getElementById(`avatar${i}`);
+
+if(!name){
+avatar.innerText = i+1;
+return;
+}
+
+avatar.innerText = name.charAt(0).toUpperCase();
+}
+
+function removePerson(btn){
+btn.parentElement.remove();
+reIndexPeople();
+}
+
+function reIndexPeople(){
+const cards=document.querySelectorAll(".person-card");
+
+cards.forEach((card,i)=>{
+card.querySelector(".avatar").innerText=i+1;
+});
+}
+
+function highlightHighest(){
+const cards=document.querySelectorAll(".person-card");
+
+let max=0;
+let maxIndex=-1;
+
+cards.forEach((card,i)=>{
+const val=parseFloat(
+cleanNumber(card.querySelector('[id^="amount"]').value)
+)||0;
+
+if(val>max){
+max=val;
+maxIndex=i;
+}
+});
+
+cards.forEach(c=>{
+c.classList.remove("max");
+const oldBadge=c.querySelector(".badge-max");
+if(oldBadge) oldBadge.remove();
+});
+
+if(maxIndex>=0){
+const card=cards[maxIndex];
+card.classList.add("max");
+
+const badge=document.createElement("div");
+badge.className="badge-max";
+badge.innerText="Terbesar";
+
+card.querySelector(".avatar").after(badge);
+}
+}
+
+function getRandomGradient(){
+const gradients = [
+"linear-gradient(135deg,#6366f1,#8b5cf6)",
+"linear-gradient(135deg,#22c55e,#16a34a)",
+"linear-gradient(135deg,#06b6d4,#0891b2)",
+"linear-gradient(135deg,#f97316,#ea580c)",
+"linear-gradient(135deg,#ec4899,#db2777)",
+"linear-gradient(135deg,#eab308,#f59e0b)",
+"linear-gradient(135deg,#3b82f6,#2563eb)",
+"linear-gradient(135deg,#ef4444,#dc2626)"
+];
+
+return gradients[Math.floor(Math.random()*gradients.length)];
+}
+
+function addPerson(){
+const container=document.getElementById("peopleList");
+const i = container.children.length;
+
+const div=document.createElement('div');
+div.className='person-card';
+
+div.innerHTML=`
+<div class="avatar" id="avatar${i}" style="background:${getRandomGradient()}">${i+1}</div>
+
+<div class="person-fields">
+<input class="input" placeholder="Nama" id="name${i}" 
+oninput="updateAvatar(${i})" />
+
+<input class="input" placeholder="Jumlah" 
+id="amount${i}" inputmode="numeric" />
+</div>
+
+<button class="delete-person" onclick="removePerson(this)">✕</button>
+`;
+
+container.appendChild(div);
+
+formatInputRupiah(document.getElementById(`amount${i}`));
 }
 
 function calculate(){
@@ -556,6 +751,8 @@ total:grandTotal,
 people:people,
 perPerson:perPerson
 });
+
+highlightHighest();
 }
 
 function shareWA(){
