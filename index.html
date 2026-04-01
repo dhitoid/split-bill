@@ -614,8 +614,10 @@ container.appendChild(div);
 
 formatInputRupiah(document.getElementById("total"));
 formatInputRupiah(document.getElementById(`amount${i}`));
-
 }
+
+document.getElementById(`amount${i}`)
+.addEventListener("input",highlightHighest);
 
 if(autoMode){
 autoFillAmounts();
@@ -637,13 +639,24 @@ avatar.innerText = name.charAt(0).toUpperCase();
 function removePerson(btn){
 btn.parentElement.remove();
 reIndexPeople();
+
+document.getElementById("people").value =
+document.querySelectorAll(".person-card").length;
 }
 
 function reIndexPeople(){
 const cards=document.querySelectorAll(".person-card");
 
 cards.forEach((card,i)=>{
+
 card.querySelector(".avatar").innerText=i+1;
+
+card.querySelector('[id^="name"]').id = `name${i}`;
+card.querySelector('[id^="amount"]').id = `amount${i}`;
+card.querySelector(".avatar").id = `avatar${i}`;
+
+card.querySelector('[id^="name"]').setAttribute("oninput",`updateAvatar(${i})`);
+
 });
 }
 
@@ -721,18 +734,28 @@ id="amount${i}" inputmode="numeric" />
 container.appendChild(div);
 
 formatInputRupiah(document.getElementById(`amount${i}`));
+
+document.getElementById(`amount${i}`)
+.addEventListener("input",highlightHighest);
+
+document.getElementById("people").value =
+document.querySelectorAll(".person-card").length;
+
+if(autoMode){
+autoFillAmounts();
+}
 }
 
 function calculate(){
 const total = getNumberValue('total');
 const service = getNumberValue('service');
 const tax = getNumberValue('tax');
-const people = parseInt(getNumberValue('people')) || 1;
+const people = document.querySelectorAll(".person-card").length || 1;
 
 let customTotal=0;
-for(let i=0;i<people;i++){
-customTotal+=parseFloat(document.getElementById(`amount${i}`)?.value)||0;
-}
+document.querySelectorAll('[id^="amount"]').forEach(el=>{
+customTotal += parseFloat(cleanNumber(el.value)) || 0;
+});
 
 let grandTotal=total+(total*service/100)+(total*tax/100);
 let perPerson=grandTotal/people;
