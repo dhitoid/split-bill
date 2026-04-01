@@ -7,9 +7,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{padding-bottom:env(safe-area-inset-bottom);min-height:100vh;background:linear-gradient(135deg,#0f172a,#1e293b);display:flex;align-items:center;justify-content:center;color:white;}
-.container{width:100%;max-width:440px;padding:20px;}
-.card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,0.3);}
+body{
+padding-bottom:env(safe-area-inset-bottom);
+min-height:100vh;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+display:flex;
+justify-content:center;
+}
+
+.container{
+width:100%;
+max-width:520px;
+padding:20px;
+}
+.card{position:relative;background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,0.3);}
 h1{font-size:22px;margin-bottom:20px;font-weight:600;}
 .label{font-size:13px;opacity:.7;margin-bottom:6px;}
 .input{
@@ -146,6 +158,12 @@ body.light .seg-btn{
   animation:fadeUp .6s ease;
 }
 
+.footer{
+width:100%;
+max-width:720px;
+margin:20px auto 0;
+}
+
 .footer-item{
   flex:1;
   text-align:center;
@@ -235,64 +253,69 @@ body.light .toggle-thumb{
 }
 
 /* MOBILE */
-@media (max-width:480px){
+@media (max-width:640px){
+
+body{
+display:block;
+}
 
 .container{
-  padding:12px;
+max-width:100%;
+padding:14px;
 }
 
 .card{
-  padding:18px;
-  border-radius:16px;
+padding:18px;
+border-radius:16px;
 }
 
 .row{
-  flex-direction:column;
+flex-direction:column;
 }
 
 .person{
-  flex-direction:column;
-}
-
-button{
-  padding:16px;
-  font-size:15px;
-}
-
-.result h2{
-  font-size:26px;
+flex-direction:column;
 }
 
 .footer{
-  position:sticky;
-  bottom:0;
-  backdrop-filter:blur(30px);
-}
-
-/* lebih nyaman sentuh */
-.seg-btn{
-  padding:12px;
+position:sticky;
+bottom:10px;
 }
 
 }
 
-/* LAPTOP */
-@media (min-width:768px){
+/* TABLET */
+@media (min-width:641px) and (max-width:1024px){
+
+.container{
+max-width:600px;
+}
+
+}
+
+/* DESKTOP */
+@media (min-width:1025px){
 
 body{
-  padding:40px;
+align-items:center;
 }
 
 .container{
-  max-width:520px;
+max-width:720px;
 }
 
 .card{
-  padding:28px;
+padding:32px;
+}
+
+.row{
+flex-direction:row;
 }
 
 .result h2{
-  font-size:32px;
+font-size:34px;
+}
+
 }
 
 @media (hover:none){
