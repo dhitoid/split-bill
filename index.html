@@ -426,6 +426,24 @@ padding-right:4px;
 font-size:13px;
 opacity:1;
 }
+
+.person-top{
+display:flex;
+gap:8px;
+}
+
+.person-fields{
+flex:1;
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.person-total{
+font-size:12px;
+opacity:.7;
+text-align:right;
+}
 </style>
 </head>
 <body>
@@ -620,7 +638,7 @@ for(let i=0;i<people;i++){
 const div=document.createElement('div');
 div.className='person-card';
 
-ddiv.innerHTML=`
+div.innerHTML=`
 <div class="avatar" id="avatar${i}" style="background:${getRandomGradient()}">${i+1}</div>
 
 <div class="person-fields">
@@ -644,15 +662,17 @@ Total: <strong>Rp 0</strong>
 
 container.appendChild(div);
 
-formatInputRupiah(document.getElementById("total"));
 formatInputRupiah(document.getElementById(`amount${i}`));
-}
 
 document.getElementById(`amount${i}`)
 .addEventListener("input",()=>{
 highlightHighest();
 updatePersonTotals();
 });
+
+}
+
+updatePersonTotals();
 
 if(autoMode){
 autoFillAmounts();
@@ -708,9 +728,14 @@ card.querySelector('[id^="name"]').id = `name${i}`;
 card.querySelector('[id^="amount"]').id = `amount${i}`;
 card.querySelector(".avatar").id = `avatar${i}`;
 
-card.querySelector('[id^="name"]').setAttribute("oninput",`updateAvatar(${i})`);
+const total = card.querySelector('[id^="total"]');
+if(total) total.id = `total${i}`;
+
+card.querySelector('[id^="name"]')
+.setAttribute("oninput",`updateAvatar(${i})`);
 
 });
+updatePersonTotals();
 }
 
 function highlightHighest(){
@@ -774,11 +799,19 @@ div.innerHTML=`
 <div class="avatar" id="avatar${i}" style="background:${getRandomGradient()}">${i+1}</div>
 
 <div class="person-fields">
+
+<div class="person-top">
 <input class="input" placeholder="Nama" id="name${i}" 
 oninput="updateAvatar(${i})" />
 
 <input class="input" placeholder="Jumlah" 
 id="amount${i}" inputmode="numeric" />
+</div>
+
+<div class="person-total" id="total${i}">
+Total: <strong>Rp 0</strong>
+</div>
+
 </div>
 
 <button class="delete-person" onclick="removePerson(this)">✕</button>
@@ -796,6 +829,8 @@ updatePersonTotals();
 
 document.getElementById("people").value =
 document.querySelectorAll(".person-card").length;
+
+updatePersonTotals();
 
 if(autoMode){
 autoFillAmounts();
